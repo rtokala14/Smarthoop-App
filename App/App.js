@@ -264,12 +264,6 @@ import { LogBox } from "react-native";
 LogBox.ignoreLogs(["new NativeEventEmitter"]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
-import {
-  PERMISSIONS,
-  RESULTS,
-  requestMultiple,
-} from "react-native-permissions";
-
 const BLTManager = new BleManager();
 
 const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
@@ -305,76 +299,44 @@ export default function App() {
 
   // Scans availbale BLT Devices and then call connectDevice
   async function scanDevices() {
-    // PermissionsAndroid.request(
-    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    //   {
-    //     title: "Permission Localisation Bluetooth",
-    //     message: "Requirement for Bluetooth",
-    //     buttonNeutral: "Later",
-    //     buttonNegative: "Cancel",
-    //     buttonPositive: "OK",
-    //   },
-    //   PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-    //   {
-    //     title: "Permission for scanning BLE",
-    //     message: "Rquirement for app",
-    //     buttonNegative: "Don't allow",
-    //     buttonPositive: "Allow",
-    //   }
-    // ).then((answer) => {
-    //   console.log("scanning");
-    //   // display the Activityindicator
-
-    //   BLTManager.startDeviceScan(null, null, (error, scannedDevice) => {
-    //     if (error) {
-    //       console.warn(error);
-    //     }
-
-    //     if (scannedDevice && scannedDevice.name == "Backboard-1") {
-    //       BLTManager.stopDeviceScan();
-    //       connectDevice(scannedDevice);
-    //     }
-    //   });
-
-    //   // stop scanning devices after 5 seconds
-    //   setTimeout(() => {
-    //     BLTManager.stopDeviceScan();
-    //   }, 10000);
-    // });
-    requestMultiple([
-      PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-    ]).then((statuses) => {
-      console.log("Scan", statuses[PERMISSIONS.ANDROID.BLUETOOTH_SCAN]);
-      console.log("Connect", statuses[PERMISSIONS.ANDROID.BLUETOOTH_CONNECT]);
-    });
-    BLTManager.startDeviceScan(
-      null,
-      {
-        allowDuplicates: false,
-      },
-      async (error, device) => {
-        // setDisplaText("Scanning...");
-        console.log("scanning");
-        if (error) {
-          console.log(error);
-          BLTManager.stopDeviceScan();
-        }
-        console.log(device);
-        if (device) {
-          if (
-            device.localName == "Backboard-1" ||
-            device.name == "Backboard-1"
-          ) {
-            connectDevice(device);
-            BLTManager.stopDeviceScan();
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN, {
+      title: "Permission for scanning BLE",
+      message: "Rquirement for app",
+      buttonNegative: "Don't allow",
+      buttonPositive: "Allow",
+    })
+      .then(
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          {
+            title: "Permission Localisation Bluetooth",
+            message: "Requirement for Bluetooth",
+            buttonNeutral: "Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
           }
-        }
+        )
+      )
+      .then((answer) => {
+        console.log("scanning");
+        // display the Activityindicator
+
+        BLTManager.startDeviceScan(null, null, (error, scannedDevice) => {
+          if (error) {
+            console.warn(error);
+          }
+
+          if (scannedDevice && scannedDevice.name == "Backboard-1") {
+            BLTManager.stopDeviceScan();
+            connectDevice(scannedDevice);
+          }
+        });
+
+        // stop scanning devices after 5 seconds
         setTimeout(() => {
           BLTManager.stopDeviceScan();
         }, 10000);
-      }
-    );
+      });
   }
 
   // handle the device disconnection (poorly)
