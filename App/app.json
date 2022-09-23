@@ -26,10 +26,23 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.tokalarr.App"
+      "package": "com.tokalarr.App",
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_CONNECT"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "@config-plugins/react-native-ble-plx"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8a757fd6-abe9-4f83-9033-af0120792c85"
+      }
     }
   }
 }
