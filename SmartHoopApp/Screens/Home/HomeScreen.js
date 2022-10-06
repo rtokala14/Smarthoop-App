@@ -11,8 +11,8 @@ const Stack = createStackNavigator();
 
 export default HomeScreen = ({navigation}) => {
   return (
-    <Stack.Navigator screenOptions={(gestureEnabled = 'true')}>
-      <Stack.Screen name="SmartHoop" component={HomePage} />
+    <Stack.Navigator screenOptions={(headerShown = 'false')}>
+      <Stack.Screen name="HomePage" component={HomePage} />
       <Stack.Screen name="FreeShoot" component={FreeShoot} />
       <Stack.Screen name="Shootout" component={Shootout} />
       <Stack.Screen name="Timed" component={Timed} />
