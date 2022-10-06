@@ -52,7 +52,7 @@ void setup()
   Serial.begin(115200);
 
   // Create the BLE Device
-  BLEDevice::init("BLEExample");
+  BLEDevice::init("Backboard-1");
   // Create the BLE Server
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());

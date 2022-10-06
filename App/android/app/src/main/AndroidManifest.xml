@@ -1,18 +1,12 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.tokalarr.App" xmlns:tools="http://schemas.android.com/tools">
-  <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-  <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.tokalarr.App">
   <uses-permission android:name="android.permission.BLUETOOTH"/>
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-  <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
   <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-  <uses-permission android:name="android.permission.BLUETOOTH_SCAN" tools:targetApi="31" android:usesPermissionFlags="neverForLocation"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
-  <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -36,7 +30,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.tokalarr.App"/>
-        <data android:scheme="exp+app"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
