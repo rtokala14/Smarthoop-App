@@ -1,18 +1,31 @@
+import 'react-native-gesture-handler';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import React from 'react';
 import {Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import HomeScreen from './Screens/HomeScreen';
+import HomeScreen from './Screens/Home/HomeScreen';
 import Statistics from './Screens/Statistics';
 import Account from './Screens/Account';
 import {NavigationContainer} from '@react-navigation/native';
 
 const Tab = createMaterialBottomTabNavigator();
+const MyTheme = {
+  dark: true,
+  colors: {
+    primary: '#d1341f',
+    background: '#242020',
+    card: '#FFBB33',
+    text: '#d9420f',
+    border: '#240a01',
+    notification: '#di341f',
+  },
+};
 
 function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
+        theme={MyTheme}
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, color, size}) => {
             let iconName;
