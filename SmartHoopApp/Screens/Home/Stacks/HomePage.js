@@ -89,9 +89,8 @@ export default HomePage = ({navigation}) => {
     if (connectedDevice != null) {
       const isDeviceConnected = await connectedDevice.isConnected();
       if (isDeviceConnected) {
-        (await BLTManager.cancelDeviceConnection(connectedDevice.id)).then(() =>
-          console.log('Disconnect completed'),
-        );
+        BLTManager.cancelDeviceConnection(connectedDevice.id);
+        console.log('Disconnect completed');
       }
     }
   }
