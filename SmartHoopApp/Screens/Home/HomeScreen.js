@@ -6,6 +6,7 @@ import HomePage from './Stacks/HomePage';
 import FreeShoot from './Stacks/FreeShoot';
 import Shootout from './Stacks/Shootout';
 import Timed from './Stacks/Timed';
+import DebugConn from './Stacks/DebugConn';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,11 @@ export default HomeScreen = ({navigation}) => {
         name="HomePage"
         options={{title: 'SmartHoop'}}
         component={HomePage}
+      />
+      <Stack.Screen
+        name="DebugConn"
+        options={{title: 'Debug Connection'}}
+        component={DebugConn}
       />
       <Stack.Screen
         name="FreeShoot"

@@ -117,21 +117,40 @@ export default HomePage = ({navigation}) => {
                 Connect
               </Button>
             ) : (
-              <Button
-                onPress={() => {
-                  disconnectDevice();
-                }}
-                color="#d1341f"
-                labelStyle={styles.buttonText}
-                style={styles.button}
-                mode="contained">
-                Disconnect
-              </Button>
+              <>
+                <Button
+                  onPress={() => {
+                    disconnectDevice();
+                  }}
+                  color="#d1341f"
+                  labelStyle={styles.buttonText}
+                  style={styles.button}
+                  mode="contained">
+                  Disconnect
+                </Button>
+                <Button
+                  onPress={() => {
+                    navigation.push('DebugConn');
+                  }}
+                  color="#d1341f"
+                  labelStyle={styles.buttonText}
+                  style={styles.debugBtn}
+                  mode="contained">
+                  Debug
+                </Button>
+              </>
             )}
           </Card.Actions>
         </Card.Content>
       </Card>
       <Text style={styles.gameTitle}>Game Modes</Text>
+      {isConnected ? (
+        <></>
+      ) : (
+        <Text style={styles.gameWarning}>
+          Connect to backboard to enable game modes
+        </Text>
+      )}
       <Card mode="elevated" elevation={2} style={styles.gameCard}>
         <Card.Content style={styles.modeContent}>
           <Title>FreeShoot</Title>
@@ -140,6 +159,7 @@ export default HomePage = ({navigation}) => {
               color="#d1341f"
               labelStyle={styles.buttonText}
               style={styles.button}
+              disabled={isConnected ? false : true}
               mode="contained"
               onPress={() => navigation.push('FreeShoot')}>
               Start
@@ -155,6 +175,7 @@ export default HomePage = ({navigation}) => {
               color="#d1341f"
               labelStyle={styles.buttonText}
               style={styles.button}
+              disabled={isConnected ? false : true}
               mode="contained"
               onPress={() => navigation.push('Shootout')}>
               Start
@@ -170,6 +191,7 @@ export default HomePage = ({navigation}) => {
               color="#d1341f"
               labelStyle={styles.buttonText}
               style={styles.button}
+              disabled={isConnected ? false : true}
               mode="contained"
               onPress={() => navigation.push('Timed')}>
               Start
@@ -228,5 +250,15 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 3,
+  },
+  gameWarning: {
+    color: '#d1341f',
+    alignSelf: 'center',
+    fontSize: 15,
+  },
+  debugBtn: {
+    borderRadius: 10,
+    padding: 3,
+    marginLeft: 10,
   },
 });
