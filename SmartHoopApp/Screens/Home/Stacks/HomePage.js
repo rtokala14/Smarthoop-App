@@ -1,17 +1,132 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Card, Surface, Text, Title} from 'react-native-paper';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {PermissionsAndroid, SafeAreaView, StyleSheet, View} from 'react-native';
+import {BleManager, Device} from 'react-native-ble-plx';
+
+const BLTManager = new BleManager();
 
 export default HomePage = ({navigation}) => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectedDevice, setConnectedDevice] = useState();
+
+  async function scanDevices() {
+    await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+      {
+        title: 'Permission Localisation Bluetooth',
+        message: 'Requirement for Blutooth',
+        buttonNeutral: 'Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    )
+      .then(
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          {
+            title: 'Permission Localisation Bluetooth',
+            message: 'Requirement for Blutooth',
+            buttonNeutral: 'Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        ),
+      )
+      .then(
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Permission Localisation Bluetooth',
+            message: 'Requirement for Blutooth',
+            buttonNeutral: 'Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        ),
+      )
+      .then(answer => {
+        console.log('scanning');
+
+        BLTManager.startDeviceScan(null, null, (error, scannedDevice) => {
+          if (error) {
+            console.warn(error);
+          }
+
+          if (scannedDevice && scannedDevice.name == 'Backboard-1') {
+            console.log('Connecting');
+            BLTManager.stopDeviceScan();
+            connectDevice(scannedDevice);
+          }
+
+          setTimeout(() => {
+            BLTManager.stopDeviceScan();
+          }, 5000);
+        });
+      });
+  }
+
+  async function connectDevice(device) {
+    console.log('Connecting to Device:', device.name);
+
+    device
+      .connect()
+      .then(device => {
+        setConnectedDevice(device);
+        setIsConnected(true);
+        return device.discoverAllServicesAndCharacteristics();
+      })
+      .then(device => {
+        BLTManager.onDeviceDisconnected(device.id, (error, device) => {
+          console.log('Device Disconnected');
+          setIsConnected(false);
+        });
+      });
+  }
+
+  async function disconnectDevice() {
+    console.log('Disconnecting start');
+
+    if (connectedDevice != null) {
+      const isDeviceConnected = await connectedDevice.isConnected();
+      if (isDeviceConnected) {
+        (
+          await BLTManager.cancelDeviceConnection(connectedDevice.id)
+        ).writeCharacteristicWithResponseForService(() =>
+          console.log('Disconnect complete'),
+        );
+      }
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Card elevation={2} mode="elevated" style={styles.connectionCard}>
         <Card.Content style={styles.contentBox}>
-          <Title style={styles.connectTitle}>Backboard not connected</Title>
+          <Title style={styles.connectTitle}>
+            {!isConnected
+              ? 'Backboard not connected'
+              : 'Connected to Backboard'}
+          </Title>
           <Card.Actions>
-            <Button color="#d1341f" mode="contained">
-              Connect
-            </Button>
+            {!isConnected ? (
+              <Button
+                onPress={() => {
+                  scanDevices();
+                }}
+                color="#d1341f"
+                mode="contained">
+                Connect
+              </Button>
+            ) : (
+              <Button
+                onPress={() => {
+                  disconnectDevice();
+                }}
+                color="#d1341f"
+                mode="contained">
+                Disconnect
+              </Button>
+            )}
           </Card.Actions>
         </Card.Content>
       </Card>

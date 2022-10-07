@@ -1,12 +1,15 @@
 import 'react-native-gesture-handler';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {LogBox, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './Screens/Home/HomeScreen';
 import Statistics from './Screens/Statistics';
 import Account from './Screens/Account';
 import {NavigationContainer} from '@react-navigation/native';
+
+LogBox.ignoreLogs(['new NativeEventEmitter']);
+LogBox.ignoreAllLogs();
 
 const Tab = createMaterialBottomTabNavigator();
 const MyTheme = {
