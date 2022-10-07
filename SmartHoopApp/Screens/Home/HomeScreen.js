@@ -1,6 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import {Text} from 'react-native';
+import {Easing, Text} from 'react-native';
 
 import HomePage from './Stacks/HomePage';
 import FreeShoot from './Stacks/FreeShoot';
@@ -9,15 +9,19 @@ import Timed from './Stacks/Timed';
 
 const Stack = createStackNavigator();
 
-const config = {
-  animation: 'spring',
+const configOpen = {
+  animation: 'timing',
   config: {
-    stiffness: 1000,
-    damping: 500,
-    mass: 3,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
+    duration: 2,
+    easing: Easing.out(Easing.poly(5)),
+  },
+};
+
+const configClose = {
+  animation: 'timing',
+  config: {
+    duration: 1,
+    easing: Easing.in(Easing.poly(5)),
   },
 };
 
@@ -30,8 +34,8 @@ export default HomeScreen = ({navigation}) => {
         headerTintColor: '#d1341f',
         // presentation: 'modal',
         transitionSpec: {
-          open: config,
-          close: config,
+          open: configOpen,
+          close: configClose,
         },
       }}>
       <Stack.Screen

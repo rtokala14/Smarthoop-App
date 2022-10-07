@@ -112,6 +112,8 @@ export default HomePage = ({navigation}) => {
                   scanDevices();
                 }}
                 color="#d1341f"
+                labelStyle={styles.buttonText}
+                style={styles.button}
                 mode="contained">
                 Connect
               </Button>
@@ -121,6 +123,8 @@ export default HomePage = ({navigation}) => {
                   disconnectDevice();
                 }}
                 color="#d1341f"
+                labelStyle={styles.buttonText}
+                style={styles.button}
                 mode="contained">
                 Disconnect
               </Button>
@@ -135,6 +139,8 @@ export default HomePage = ({navigation}) => {
           <Card.Actions>
             <Button
               color="#d1341f"
+              labelStyle={styles.buttonText}
+              style={styles.button}
               mode="contained"
               onPress={() => navigation.push('FreeShoot')}>
               Start
@@ -148,6 +154,8 @@ export default HomePage = ({navigation}) => {
           <Card.Actions>
             <Button
               color="#d1341f"
+              labelStyle={styles.buttonText}
+              style={styles.button}
               mode="contained"
               onPress={() => navigation.push('Shootout')}>
               Start
@@ -161,6 +169,8 @@ export default HomePage = ({navigation}) => {
           <Card.Actions>
             <Button
               color="#d1341f"
+              labelStyle={styles.buttonText}
+              style={styles.button}
               mode="contained"
               onPress={() => navigation.push('Timed')}>
               Start
@@ -182,6 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d17164',
     height: 100,
     marginBottom: 10,
+    borderRadius: 20,
   },
   gameTitle: {
     fontSize: 20,
@@ -202,7 +213,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     flex: 1,
-    maxHeight: 100,
+    maxHeight: 90,
+    borderRadius: 20,
   },
   modeContent: {
     flex: 1,
@@ -210,5 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 2,
+  },
+  buttonText: {
+    color: '#000000',
+  },
+  button: {
+    borderRadius: 10,
+    padding: 3,
   },
 });
