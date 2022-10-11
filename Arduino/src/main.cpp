@@ -3,20 +3,22 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 
+using namespace std;
+
 // BLE SECTION
 BLEServer *pServer = NULL;
 
-BLECharacteristic *message_characteristic = NULL;
-BLECharacteristic *box_characteristic = NULL;
+BLECharacteristic *shot_characteristic = NULL;
+// BLECharacteristic *box_characteristic = NULL;
 
-String boxValue = "0";
+string boxValue = "0";
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 
-#define MESSAGE_CHARACTERISTIC_UUID "6d68efe5-04b6-4a85-abc4-c2670b7bf7fd"
-#define BOX_CHARACTERISTIC_UUID "f27b53ad-c63d-49a0-8c0f-9f297e6cc520"
+#define SHOT_CHARACTERISTIC_UUID "6d68efe5-04b6-4a85-abc4-c2670b7bf7fd"
+// #define BOX_CHARACTERISTIC_UUID "f27b53ad-c63d-49a0-8c0f-9f297e6cc520"
 
 class MyServerCallbacks : public BLEServerCallbacks
 {
@@ -28,6 +30,7 @@ class MyServerCallbacks : public BLEServerCallbacks
   void onDisconnect(BLEServer *pServer)
   {
     Serial.println("Disconnected");
+    shot_characteristic->setValue("0");
     pServer->startAdvertising();
   }
 };
@@ -39,12 +42,12 @@ class CharacteristicsCallbacks : public BLECharacteristicCallbacks
     Serial.print("Value Written ");
     Serial.println(pCharacteristic->getValue().c_str());
 
-    if (pCharacteristic == box_characteristic)
-    {
-      boxValue = pCharacteristic->getValue().c_str();
-      box_characteristic->setValue(const_cast<char *>(boxValue.c_str()));
-      box_characteristic->notify();
-    }
+    // if (pCharacteristic == box_characteristic)
+    // {
+    //   boxValue = pCharacteristic->getValue().c_str();
+    //   box_characteristic->setValue(const_cast<char *>(boxValue.c_str()));
+    //   box_characteristic->notify();
+    // }
   }
 };
 
@@ -62,19 +65,19 @@ void setup()
   delay(100);
 
   // Create a BLE Characteristic
-  message_characteristic = pService->createCharacteristic(
-      MESSAGE_CHARACTERISTIC_UUID,
+  shot_characteristic = pService->createCharacteristic(
+      SHOT_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ |
           BLECharacteristic::PROPERTY_WRITE |
           BLECharacteristic::PROPERTY_NOTIFY |
           BLECharacteristic::PROPERTY_INDICATE);
 
-  box_characteristic = pService->createCharacteristic(
-      BOX_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ |
-          BLECharacteristic::PROPERTY_WRITE |
-          BLECharacteristic::PROPERTY_NOTIFY |
-          BLECharacteristic::PROPERTY_INDICATE);
+  // box_characteristic = pService->createCharacteristic(
+  //     BOX_CHARACTERISTIC_UUID,
+  //     BLECharacteristic::PROPERTY_READ |
+  //         BLECharacteristic::PROPERTY_WRITE |
+  //         BLECharacteristic::PROPERTY_NOTIFY |
+  //         BLECharacteristic::PROPERTY_INDICATE);
 
   // Start the BLE service
   pService->start();
@@ -82,24 +85,38 @@ void setup()
   // Start advertising
   pServer->getAdvertising()->start();
 
-  message_characteristic->setValue("Message one");
-  message_characteristic->setCallbacks(new CharacteristicsCallbacks());
+  // message_characteristic->setValue("Message one");
+  // message_characteristic->setCallbacks(new CharacteristicsCallbacks());
 
-  box_characteristic->setValue("0");
-  box_characteristic->setCallbacks(new CharacteristicsCallbacks());
+  // box_characteristic->setValue("0");
+  // box_characteristic->setCallbacks(new CharacteristicsCallbacks());
+
+  shot_characteristic->setValue("0");
+  shot_characteristic->setCallbacks(new CharacteristicsCallbacks());
 
   Serial.println("Waiting for a client connection to notify...");
 }
 
 void loop()
 {
-  message_characteristic->setValue("Message one");
-  message_characteristic->notify();
+  // message_characteristic->setValue("Message one");
+  // message_characteristic->notify();
 
-  delay(1000);
+  // delay(1000);
 
-  message_characteristic->setValue("Message Two");
-  message_characteristic->notify();
+  // message_characteristic->setValue("Message Two");
+  // message_characteristic->notify();
 
-  delay(1000);
+  // delay(1000);
+
+  while (Serial.available() == 0) {}
+  char x = Serial.read();
+  if (x == 'y') {
+    boxValue = shot_characteristic->getValue();
+    int final = stoi(boxValue) + 1;
+    shot_characteristic->setValue(to_string(final));
+    Serial.println(final);
+    shot_characteristic->notify();
+  }
+
 }

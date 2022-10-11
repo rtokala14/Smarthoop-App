@@ -3,11 +3,18 @@ import {Button, Card, Surface, Text, Title} from 'react-native-paper';
 import {PermissionsAndroid, SafeAreaView, StyleSheet, View} from 'react-native';
 import {BleManager, Device} from 'react-native-ble-plx';
 
+import base64 from 'react-native-base64';
+
 const BLTManager = new BleManager();
+
+const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+
+const SHOT_CHARACTERISTIC_UUID = '6d68efe5-04b6-4a85-abc4-c2670b7bf7fd';
 
 export default HomePage = ({navigation}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState();
+  const [shotCounter, setShotCounter] = useState('0');
 
   async function scanDevices() {
     await PermissionsAndroid.request(
@@ -70,6 +77,7 @@ export default HomePage = ({navigation}) => {
 
     device
       .connect()
+      // .then(BLTManager.connectToDevice(device.id))
       .then(device => {
         setConnectedDevice(device);
         setIsConnected(true);
@@ -80,6 +88,26 @@ export default HomePage = ({navigation}) => {
           console.log('Device Disconnected');
           setIsConnected(false);
         });
+
+        device
+          .readCharacteristicForService(SERVICE_UUID, SHOT_CHARACTERISTIC_UUID)
+          .then(valenc => {
+            setShotCounter(base64.decode(valenc?.value));
+          });
+
+        device.monitorCharacteristicForService(
+          SERVICE_UUID,
+          SHOT_CHARACTERISTIC_UUID,
+          (error, characteristic) => {
+            if (characteristic?.value != null) {
+              setShotCounter(base64.decode(characteristic?.value));
+              console.log(
+                'Message received (SHOT MADE): Shot ',
+                base64.decode(characteristic?.value),
+              );
+            }
+          },
+        );
       });
   }
 
@@ -129,14 +157,14 @@ export default HomePage = ({navigation}) => {
                   Disconnect
                 </Button>
                 <Button
-                  onPress={() => {
-                    navigation.push('DebugConn');
-                  }}
+                  // onPress={() => {
+                  //   navigation.push('DebugConn', {shotCount: shotCounter});
+                  // }}
                   color="#d1341f"
                   labelStyle={styles.buttonText}
                   style={styles.debugBtn}
                   mode="contained">
-                  Debug
+                  Debug - ({shotCounter})
                 </Button>
               </>
             )}
