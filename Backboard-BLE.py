@@ -6,6 +6,8 @@ import ubluetooth
 ble_msg = ""
 is_ble_connected = False
 
+shot_counter = 0
+
 class ESP32_BLE():
     def __init__(self, name):
         self.name = name
@@ -19,10 +21,13 @@ class ESP32_BLE():
     def connected(self):
         global is_ble_connected
         is_ble_connected = True
+        print("Connected")
     
     def disconnected(self):
         global is_ble_connected
         is_ble_connected = False
+        print("Disconnected")
+        shot_counter = 0
         
     def ble_irq(self, event, data):
         global ble_msg
@@ -52,7 +57,7 @@ class ESP32_BLE():
         ((self.tx, self.rx,), ) = self.ble.gatts_register_services(SERVICES)
     
     def send(self, data):
-        self.ble.gatts_notify(0, self.tx, data + '\n')
+        self.ble.gatts_notify(0, self.rx, data + '\n')
 
     def advertiser(self):
         name = bytes(self.name, 'UTF-8')
@@ -65,7 +70,11 @@ ble = ESP32_BLE("Backboard-1")
 
 while True:
     if is_ble_connected:
-        ble.send("Hello")
-        ble.send("Rohit")
-    sleep_ms(1000)
+        #ble.send("Hello")
+        #ble.send("Rohit")
+        pressed = input("Press any key to register shot")
+        shot_counter = shot_counter + 1
+        ble.send(str(shot_counter))
+    #sleep_ms(1000)
     
+
