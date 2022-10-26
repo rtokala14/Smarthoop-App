@@ -135,6 +135,19 @@ export default HomePage = ({navigation}) => {
     }
   }
 
+  async function startMode(mode) {
+    let device = connectedDevice;
+
+    // let out = BLTManager.characteristicsForDevice(device.id, SERVICE_UUID);
+
+    let ret = BLTManager.writeCharacteristicWithResponseForDevice(
+      device.id,
+      SERVICE_UUID,
+      SEND_UUID,
+      base64.encode(mode),
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Card elevation={2} mode="elevated" style={styles.connectionCard}>
@@ -202,7 +215,10 @@ export default HomePage = ({navigation}) => {
               style={styles.button}
               disabled={isConnected ? false : true}
               mode="contained"
-              onPress={() => navigation.push('FreeShoot')}>
+              onPress={() => {
+                startMode('free');
+                navigation.push('FreeShoot');
+              }}>
               Start
             </Button>
           </Card.Actions>
@@ -218,7 +234,10 @@ export default HomePage = ({navigation}) => {
               style={styles.button}
               disabled={isConnected ? false : true}
               mode="contained"
-              onPress={() => navigation.push('Shootout')}>
+              onPress={() => {
+                startMode('shootout');
+                navigation.push('Shootout');
+              }}>
               Start
             </Button>
           </Card.Actions>
@@ -234,7 +253,10 @@ export default HomePage = ({navigation}) => {
               style={styles.button}
               disabled={isConnected ? false : true}
               mode="contained"
-              onPress={() => navigation.push('Timed')}>
+              onPress={() => {
+                startMode('timed');
+                navigation.push('Timed');
+              }}>
               Start
             </Button>
           </Card.Actions>

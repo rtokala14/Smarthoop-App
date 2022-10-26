@@ -38,7 +38,7 @@ class ESP32_BLE():
             self.advertiser()
             self.disconnected()
         elif event == 3: #IRQ_GATTS_WRITE
-            buffer = self.ble.gatts_read(self.rx)
+            buffer = self.ble.gatts_read(self.tx)
             ble_msg = buffer.decode('UTF-8').strip()
             print(ble_msg)
     
@@ -46,11 +46,11 @@ class ESP32_BLE():
         # Nordic UART Service (NUS)
         SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
         SHOT_CHARACTERISTIC_UUID = '6d68efe5-04b6-4a85-abc4-c2670b7bf7fd'
-        TX_UUID = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'
+        TX_UUID = '07c4743f-639c-49ab-9d14-31ca27193ad0'
             
         BLE_NUS = ubluetooth.UUID(SERVICE_UUID)
         BLE_RX = (ubluetooth.UUID(SHOT_CHARACTERISTIC_UUID), ubluetooth.FLAG_NOTIFY)
-        BLE_TX = (ubluetooth.UUID(TX_UUID), ubluetooth.FLAG_NOTIFY)
+        BLE_TX = (ubluetooth.UUID(TX_UUID), ubluetooth.FLAG_READ | ubluetooth.FLAG_WRITE)
             
         BLE_UART = (BLE_NUS, (BLE_TX, BLE_RX, ))
         SERVICES = (BLE_UART, )
@@ -72,7 +72,7 @@ while True:
     if is_ble_connected:
         #ble.send("Hello")
         #ble.send("Rohit")
-        pressed = input("Press any key to register shot")
+        pressed = input()
         shot_counter = shot_counter + 1
         ble.send(str(shot_counter))
     #sleep_ms(1000)
