@@ -11,6 +11,8 @@ const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 
 const SHOT_CHARACTERISTIC_UUID = '6d68efe5-04b6-4a85-abc4-c2670b7bf7fd';
 
+const SEND_UUID = '07c4743f-639c-49ab-9d14-31ca27193ad0';
+
 export default HomePage = ({navigation}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState();
@@ -59,6 +61,8 @@ export default HomePage = ({navigation}) => {
             console.warn(error);
           }
 
+          console.log(scannedDevice.name);
+
           if (scannedDevice && scannedDevice.name == 'Backboard-1') {
             console.log('Connecting');
             BLTManager.stopDeviceScan();
@@ -79,6 +83,7 @@ export default HomePage = ({navigation}) => {
       .connect()
       // .then(BLTManager.connectToDevice(device.id))
       .then(device => {
+        console.log('connected');
         setConnectedDevice(device);
         setIsConnected(true);
         return device.discoverAllServicesAndCharacteristics();
@@ -95,6 +100,8 @@ export default HomePage = ({navigation}) => {
             setShotCounter(base64.decode(valenc?.value));
           });
 
+        // console.log('read S&C');
+
         device.monitorCharacteristicForService(
           SERVICE_UUID,
           SHOT_CHARACTERISTIC_UUID,
@@ -104,11 +111,16 @@ export default HomePage = ({navigation}) => {
               console.log(
                 'Message received (SHOT MADE): Shot ',
                 base64.decode(characteristic?.value),
+                // characteristic?.value,
               );
             }
           },
         );
+        // console.log('Monitoring');
       });
+
+    // let test = await device.discoverAllServicesAndCharacteristics();
+    // console.log(test);
   }
 
   async function disconnectDevice() {
@@ -164,7 +176,8 @@ export default HomePage = ({navigation}) => {
                   labelStyle={styles.buttonText}
                   style={styles.debugBtn}
                   mode="contained">
-                  Debug - ({shotCounter})
+                  {/* Debug - ({shotCounter}) */}
+                  {shotCounter}
                 </Button>
               </>
             )}
