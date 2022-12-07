@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import React from 'react';
+import React, {useState} from 'react';
 import {LogBox, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './Screens/Home/HomeScreen';
@@ -25,6 +25,9 @@ const MyTheme = {
 };
 
 function App() {
+  const [LoggedIn, setLoggedIn] = useState(false);
+  const [AccountName, setAccountName] = useState('');
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -54,7 +57,17 @@ function App() {
         }}>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Stats" component={Statistics} />
-        <Tab.Screen name="Account" component={Account} />
+        <Tab.Screen
+          name="Account"
+          children={() => (
+            <Account
+              LoggedIn={LoggedIn}
+              AccountName={AccountName}
+              setLoggedIn={setLoggedIn}
+              setAccountName={setAccountName}
+            />
+          )}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

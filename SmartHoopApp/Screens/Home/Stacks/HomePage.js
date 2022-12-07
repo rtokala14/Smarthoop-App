@@ -61,7 +61,7 @@ export default HomePage = ({navigation}) => {
             console.warn(error);
           }
 
-          console.log(scannedDevice.name);
+          // console.log(scannedDevice.name);
 
           if (scannedDevice && scannedDevice.name == 'Backboard-1') {
             console.log('Connecting');
